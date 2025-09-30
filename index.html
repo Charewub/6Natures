@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signature Strengths Assessment</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- Zen Theme: General Styles --- */
+        body {
+            font-family: 'Kanit', sans-serif;
+            background-color: #f8f9fa;
+            color: #555;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px 10px;
+        }
+        .container {
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.05);
+            width: 100%;
+            max-width: 800px;
+            border: 1px solid #e9ecef;
+        }
+        #start-container, #quiz-container {
+            background: #ffffff;
+        }
+        h1 {
+            color: #343a40;
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+
+        /* --- Start Page & Form Styles --- */
+        #start-container .logo {
+            display: block;
+            margin: 0 auto 25px auto;
+            max-width: 150px;
+        }
+        #start-container .form-group {
+            margin-bottom: 25px;
+        }
+        #start-container label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #495057;
+        }
+        #start-container input[type="text"], #start-container input[type="email"] {
+            width: 100%;
+            padding: 15px 20px;
+            border-radius: 12px;
+            border: 2px solid #dee2e6;
+            font-size: 1em;
+            font-family: 'Kanit', sans-serif;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            box-sizing: border-box;
+        }
+        #start-container input[type="text"]:focus, #start-container input[type="email"]:focus {
+            outline: none;
+            border-color: #4682B4;
+            box-shadow: 0 0 0 3px rgba(70, 130, 180, 0.2);
+        }
+
+        /* --- Question Styling --- */
+        .question-block {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #f1f3f5;
+        }
+        .question-block:last-child {
+            border-bottom: none;
+        }
+        .question-text {
+            font-size: 1.2em;
+            font-weight: 700;
+            color: #495057;
+            margin-bottom: 20px;
+        }
+
+        /* --- Clickable Choices Styling --- */
+        .options .option-item {
+            display: block;
+            position: relative;
+            margin-bottom: 12px;
+            cursor: pointer;
+        }
+        .options .option-label {
+            display: block;
+            background: #f8f9fa;
+            padding: 18px 25px;
+            border-radius: 12px;
+            transition: background-color 0.3s, border 0.3s, transform 0.2s, box-shadow 0.3s;
+            border: 2px solid #dee2e6;
+        }
+        .options .option-item input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .options .option-item:hover .option-label {
+            transform: translateY(-2px);
+            box-shadow: 4px 4px 15px rgba(0,0,0,0.07);
+            border-color: #ced4da;
+        }
+        .options .option-item input[type="radio"]:checked + .option-label {
+            background-color: #eef7f6;
+            border: 2px solid #4682B4;
+            color: #4682B4;
+            font-weight: 700;
+            box-shadow: 4px 4px 15px rgba(0,0,0,0.07);
+        }
+
+        /* --- Unified Button Styles --- */
+        .main-btn {
+            width: 100%;
+            display: block;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 10px;
+            background-color: #4682B4;
+            color: white;
+            font-size: 1.1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.3s, box-shadow 0.3s, transform 0.2s;
+            box-shadow: 0 4px 15px rgba(70, 130, 180, 0.2);
+            text-align: center;
+            text-decoration: none;
+        }
+        .main-btn:hover {
+            background-color: #3e729d;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(70, 130, 180, 0.3);
+        }
+        .main-btn:disabled {
+            background-color: #adb5bd;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 40px;
+        }
+        .navigation-buttons .main-btn {
+            width: auto;
+            font-size: 1em;
+        }
+        #page-indicator {
+            font-weight: 700;
+            color: #adb5bd;
+        }
+        
+        /* --- Custom Modern Alert --- */
+        #custom-alert-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); display: none; justify-content: center; align-items: center; z-index: 1000; }
+        #custom-alert-box { background: #ffffff; padding: 40px; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.15); text-align: center; max-width: 90%; width: 400px; }
+        #custom-alert-message { font-size: 1.1em; color: #495057; margin: 0 0 25px 0; }
+        #custom-alert-btn { padding: 10px 30px; border: none; border-radius: 10px; background-color: #6c757d; color: white; font-size: 1em; font-weight: 700; cursor: pointer; transition: background-color 0.3s; }
+        #custom-alert-btn:hover { background-color: #5a6268; }
+
+        /* --- Results Styling --- */
+        #results-container {
+            display: none;
+            text-align: center;
+            transition: background-color 0.5s ease;
+        }
+        #group-results .icon {
+            margin-bottom: 15px;
+            line-height: 0;
+        }
+        #group-results .icon img {
+            max-width: 120px;
+            height: auto;
+            margin: 0 5px;
+        }
+        #group-results h3 {
+            margin-top: 0;
+            font-size: 1.2em;
+            font-weight: 400;
+        }
+        #group-results .dominant-group {
+            font-size: 2.2em;
+            font-weight: 700;
+            margin: 10px 0 20px 0;
+        }
+        #group-results .dominant-group-definition {
+            font-size: 1.1em;
+            max-width: 500px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        #top-5-summary {
+            margin-top: 35px;
+            padding: 25px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            text-align: left;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.05);
+        }
+        #top-5-summary h3 {
+            font-size: 1.2em;
+            font-weight: 700;
+            margin-top: 0;
+            margin-bottom: 15px;
+            text-align: center;
+            color: #343a40 !important;
+        }
+        #top-5-summary ol {
+            padding-left: 30px;
+            margin: 0;
+        }
+        #top-5-summary li {
+            font-size: 1.1em;
+            margin-bottom: 10px;
+            color: #555 !important;
+        }
+        
+        /* --- Dynamic Theme Colors for Results (Full Background) --- */
+        #results-container.theme-visionary { background-color: #6f42c1; color: white; border-color: #6f42c1;}
+        #results-container.theme-creative { background-color: #ffc107; color: #212529; border-color: #ffc107;}
+        #results-container.theme-driving { background-color: #dc3545; color: white; border-color: #dc3545;}
+        #results-container.theme-connecting { background-color: #007bff; color: white; border-color: #007bff;}
+        #results-container.theme-integrity { background-color: #ffffeb; color: #212529; border-color: #2F4F4F;}
+        #results-container.theme-resilient { background-color: #28a745; color: white; border-color: #28a745;}
+        /* Multiple themes for mixed results */
+        #results-container[class*="theme-"] h1,
+        #results-container[class*="theme-"] h3,
+        #results-container[class*="theme-"] .dominant-group {
+            color: inherit;
+        }
+        #results-container.theme-creative h1,
+        #results-container.theme-creative h3,
+        #results-container.theme-creative .dominant-group,
+        #results-container.theme-integrity h1,
+        #results-container.theme-integrity h3,
+        #results-container.theme-integrity .dominant-group {
+            color: #212529;
+        }
+        #results-container[class*="theme-"] .dominant-group-definition {
+            color: inherit;
+            opacity: 0.85;
+        }
+
+        /* --- MOBILE RESPONSIVE STYLES --- */
+        @media (max-width: 600px) {
+            body { padding: 15px 10px; }
+            .container { padding: 25px 20px; }
+            h1 { font-size: 1.5em; }
+            #start-container .logo {
+                max-width: 120px;
+                margin-bottom: 20px; /* ปรับขนาดโลโก้และระยะห่าง */
+            }
+            #start-container input[type="text"], #start-container input[type="email"] {
+                padding: 12px 15px;
+                font-size: 0.9em;
+            }
+            .question-text { font-size: 1.1em; }
+            .options .option-label { padding: 15px; font-size: 0.95em; }
+            .main-btn { padding: 12px 20px; font-size: 1em; }
+            .navigation-buttons .main-btn { font-size: 0.9em; }
+            #group-results .icon img { max-width: 100px; }
+            #group-results .dominant-group { font-size: 1.8em; }
+            #group-results .dominant-group-definition { font-size: 1em; }
+            #top-5-summary { padding: 20px; }
+            #top-5-summary h3 { font-size: 1.1em; }
+            #top-5-summary li { font-size: 1em; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="start-container" class="container">
+        <img src="https://s.imgz.io/2025/09/08/6naturestrengths14844cf9269afbf6.png" alt="Signature Strengths Logo" class="logo">
+        <h1>Signature Strengths Assessment</h1>
+        <div class="form-group">
+            <label for="employeeName">ชื่อ-นามสกุล</label>
+            <input type="text" id="employeeName" placeholder="กรอกชื่อ-นามสกุลของคุณ">
+        </div>
+        <div class="form-group">
+            <label for="employeeId">รหัสพนักงาน</label>
+            <input type="text" id="employeeId" placeholder="กรอกรหัสพนักงาน">
+        </div>
+        <div class="form-group">
+            <label for="employeeEmail">อีเมล์</label>
+            <input type="email" id="employeeEmail" placeholder="กรอกอีเมล์ (@airasia.com)">
+        </div>
+        <button id="start-btn" class="main-btn">เริ่มทำแบบทดสอบ</button>
+    </div>
+
+    <div id="quiz-container" class="container" style="display: none;">
+        <div id="questions-wrapper"></div>
+        <div class="navigation-buttons">
+            <button id="prev-btn" class="main-btn">ก่อนหน้า</button>
+            <span id="page-indicator"></span>
+            <button id="next-btn" class="main-btn">ถัดไป</button>
+            <button id="submit-btn" class="main-btn" style="display: none;">ส่งคำตอบ</button>
+        </div>
+    </div>
+
+    <div id="results-container" class="container" style="display:none;">
+        <h1>ผลลัพธ์ของคุณ</h1>
+        <div id="group-results"></div>
+        <div id="top-5-summary"></div>
+    </div>
+    
+    <div id="custom-alert-overlay">
+        <div id="custom-alert-box">
+            <p id="custom-alert-message"></p>
+            <button id="custom-alert-btn">ตกลง</button>
+        </div>
+    </div>
+
+<script>
+    // --- 1. DATA ---
+    const questions = [{"question_number": 1, "clean_option_a": "ฉันสามารถมองเห็นภาพรวมและเชื่อมโยงส่วนต่างๆ ของแผนงานที่ซับซ้อนได้", "strength_code_a": "S01", "clean_option_b": "การรับฟังอย่างตั้งใจโดยไม่ตัดสิน คือสิ่งที่ฉันให้ความสำคัญ", "strength_code_b": "S16"}, {"question_number": 2, "clean_option_a": "ฉันมักจะใช้เวลาวาดภาพอนาคตที่น่าตื่นเต้นเพื่อเป็นแนวทางในการทำงาน", "strength_code_a": "S02", "clean_option_b": "ฉันมีความสุขที่ได้เห็นคนในทีมเติบโตและค้นพบศักยภาพของตัวเอง", "strength_code_b": "S17"}, {"question_number": 3, "clean_option_a": "ฉันสามารถสื่อสารวิสัยทัศน์ที่ทำให้คนอื่นรู้สึกมีพลังและอยากทำตาม", "strength_code_a": "S03", "clean_option_b": "ฉันสามารถอธิบายเรื่องที่ซับซ้อนให้กลายเป็นเรื่องราวที่เข้าใจง่าย", "strength_code_b": "S18"}, {"question_number": 4, "clean_option_a": "ฉันชอบเชื่อมโยงข้อมูลหลายๆ อย่างเข้าด้วยกันเพื่อสร้างเป็นแนวคิดใหม่", "strength_code_a": "S04", "clean_option_b": "การได้ช่วยเหลือให้คนอื่นเติบโตและเก่งขึ้นเป็นความสุขของฉัน", "strength_code_b": "S19"}, {"question_number": 5, "clean_option_a": "เป้าหมายที่ชัดเจนและท้าทายคือสิ่งที่ขับเคลื่อนฉันในการทำงาน", "strength_code_a": "S05", "clean_option_b": "ฉันเชื่อว่าผลงานที่ดีที่สุดเกิดจากการทำงานร่วมกันเป็นทีม", "strength_code_b": "S20"}, {"question_number": 6, "clean_option_a": "ฉันมักจะหาวิธีการใหม่ๆ ในการทำสิ่งเดิมๆ ให้ดีขึ้น", "strength_code_a": "S06", "clean_option_b": "ฉันยึดมั่นในหลักการของตัวเอง แม้ว่ามันจะทำให้ตัดสินใจได้ยากขึ้น", "strength_code_b": "S21"}, {"question_number": 7, "clean_option_a": "หากมีเรื่องที่ฉันสงสัย ฉันจะค้นคว้าหาข้อมูลจนกว่าจะเข้าใจอย่างลึกซึ้ง", "strength_code_a": "S07", "clean_option_b": "เมื่อฉันรับปากหรือสัญญาอะไรไว้ ฉันจะทำมันให้สำเร็จเสมอ", "strength_code_b": "S22"}, {"question_number": 8, "clean_option_a": "แม้จะเจอปัญหา ฉันก็ยังเชื่อว่าจะต้องมีทางออกที่ดีรออยู่เสมอ", "strength_code_a": "S08", "clean_option_b": "ฉันปฏิบัติต่อทุกคนด้วยมาตรฐานเดียวกันอย่างเท่าเทียมกัน", "strength_code_b": "S23"}, {"question_number": 9, "clean_option_a": "ฉันสามารถวิเคราะห์ปัญหาที่ซับซ้อนและระบุสาเหตุที่แท้จริงได้", "strength_code_a": "S09", "clean_option_b": "ฉันรู้สึกว่าผลงานของทีมสำคัญกว่าการได้รับคำชื่นชมเป็นการส่วนตัว", "strength_code_b": "S24"}, {"question_number": 10, "clean_option_a": "เมื่อมีไอเดียดีๆ ฉันจะลงมือทำทันทีโดยไม่รอช้า", "strength_code_a": "S10", "clean_option_b": "ฉันพร้อมที่จะพูดหรือทำในสิ่งที่ถูกต้อง แม้ว่ามันจะไม่เป็นที่นิยมก็ตาม", "strength_code_b": "S25"}, {"question_number": 11, "clean_option_a": "ฉันรู้สึกดีกับตัวเองเมื่อได้ผลักดันงานให้คืบหน้าไปอย่างรวดเร็ว", "strength_code_a": "S11", "clean_option_b": "เมื่อรู้สึกเครียด ฉันสามารถหยุดและทบทวนอารมณ์ของตนเองได้", "strength_code_b": "S26"}, {"question_number": 12, "clean_option_a": "การวางแผนและจัดสรรทรัพยากรให้เกิดประโยชน์สูงสุดคือสิ่งที่ฉันถนัด", "strength_code_a": "S12", "clean_option_b": "เมื่อแผนเดิมใช้ไม่ได้ผล ฉันสามารถเปลี่ยนไปใช้แผนใหม่ได้อย่างรวดเร็ว", "strength_code_b": "S27"}, {"question_number": 13, "clean_option_a": "ฉันสามารถตัดสินใจเรื่องสำคัญได้อย่างรวดเร็วแม้จะมีข้อมูลไม่มากนัก", "strength_code_a": "S13", "clean_option_b": "ฉันพร้อมที่จะเปลี่ยนความคิดเห็นของตัวเอง หากมีข้อมูลใหม่ที่ดีกว่า", "strength_code_b": "S28"}, {"question_number": 14, "clean_option_a": "เมื่อเจอกับอุปสรรค ฉันจะพยายามหนักขึ้นแทนที่จะยอมแพ้", "strength_code_a": "S14", "clean_option_b": "ฉันสามารถรักษาความสงบและคิดอย่างมีเหตุผลได้ดีในสถานการณ์ที่กดดัน", "strength_code_b": "S29"}, {"question_number": 15, "clean_option_a": "ฉันมักจะตรวจสอบงานในรายละเอียดเพื่อให้แน่ใจว่าไม่มีอะไรผิดพลาด", "strength_code_a": "S15", "clean_option_b": "ความล้มเหลวคือบทเรียนที่ทำให้ฉันแข็งแกร่งขึ้นในครั้งต่อไป", "strength_code_b": "S30"}, {"question_number": 16, "clean_option_a": "ก่อนเริ่มโครงการ ฉันมักจะวางแผนเส้นทางและผลลัพธ์ที่เป็นไปได้หลายๆ แบบไว้ล่วงหน้า", "strength_code_a": "S01", "clean_option_b": "การให้คำแนะนำที่เป็นประโยชน์เพื่อช่วยให้คนอื่นพัฒนาคือสิ่งที่ฉันชอบทำ", "strength_code_b": "S17"}, {"question_number": 17, "clean_option_a": "การคิดถึงอนาคตทำให้ฉันมีพลังและแรงบันดาลใจมากกว่าการจมอยู่กับปัจจุบัน", "strength_code_a": "S02", "clean_option_b": "ผู้คนมักบอกว่าฉันเป็นคนที่เล่าเรื่องได้น่าติดตาม", "strength_code_b": "S18"}, {"question_number": 18, "clean_option_a": "การสื่อสารของฉันมักจะกระตุ้นให้คนอื่นมองเห็นภาพใหญ่และเป้าหมายร่วมกัน", "strength_code_a": "S03", "clean_option_b": "ฉันมองเห็นข้อดีและศักยภาพในตัวคนอื่นที่พวกเขามองไม่เห็น", "strength_code_b": "S19"}, {"question_number": 19, "clean_option_a": "ฉันมักจะเห็นความเชื่อมโยงในสิ่งต่างๆ ที่คนอื่นมองว่าไม่เกี่ยวข้องกัน", "strength_code_a": "S04", "clean_option_b": "ฉันชอบทำงานในบรรยากาศที่ทุกคนช่วยเหลือและสนับสนุนซึ่งกันและกัน", "strength_code_b": "S20"}, {"question_number": 20, "clean_option_a": "ฉันจะตั้งเป้าหมายที่สามารถวัดผลได้ เพื่อให้รู้ว่าเข้าใกล้ความสำเร็จแค่ไหน", "strength_code_a": "S05", "clean_option_b": "ฉันมีชุดคุณค่าส่วนตัวที่ใช้เป็นเข็มทิศในการตัดสินใจทุกเรื่อง", "strength_code_b": "S21"}, {"question_number": 21, "clean_option_a": "ฉันชอบทดลองทำสิ่งต่างๆ ในรูปแบบที่ไม่เคยมีใครทำมาก่อน", "strength_code_a": "S06", "clean_option_b": "คำพูดของฉันและการกระทำของฉันเป็นสิ่งเดียวกันเสมอ", "strength_code_b": "S22"}, {"question_number": 22, "clean_option_a": "ฉันมีความสุขกับการได้เรียนรู้สิ่งใหม่ๆ แม้ว่าสิ่งนั้นจะไม่ได้เกี่ยวกับงานโดยตรง", "strength_code_a": "S07", "clean_option_b": "ก่อนตัดสินใจ ฉันจะรับฟังข้อมูลจากทุกฝ่ายอย่างเป็นกลาง", "strength_code_b": "S23"}, {"question_number": 23, "clean_option_a": "ฉันเชื่อว่าทุกปัญหามีโอกาสซ่อนอยู่", "strength_code_a": "S08", "clean_option_b": "ฉันยินดีที่จะให้เครดิตกับคนอื่นเมื่อทีมประสบความสำเร็จ", "strength_code_b": "S24"}, {"question_number": 24, "clean_option_a": "ฉันชอบที่จะเจอโจทย์ยากๆ ที่ต้องใช้การคิดวิเคราะห์เพื่อหาทางแก้ไข", "strength_code_a": "S09", "clean_option_b": "ฉันเชื่อในการปกป้องสิ่งที่ถูกต้อง แม้จะต้องเผชิญหน้ากับความขัดแย้ง", "strength_code_b": "S25"}, {"question_number": 25, "clean_option_a": "\"ลงมือทำเลย\" เป็นแนวคิดที่ฉันใช้ในการทำงานอยู่เสมอ", "strength_code_a": "S10", "clean_option_b": "ฉันสามารถรับรู้ถึงความคิดที่กำลังเกิดขึ้นในหัวของตัวเองได้", "strength_code_b": "S26"}, {"question_number": 26, "clean_option_a": "รายการสิ่งที่ต้องทำ (To-do list) ที่ถูกขีดฆ่าออกไปเป็นสิ่งที่ทำให้ฉันพอใจ", "strength_code_a": "S11", "clean_option_b": "ฉันมองว่าการเปลี่ยนแปลงที่ไม่คาดฝันคือโอกาส ไม่ใช่วิกฤต", "strength_code_b": "S27"}, {"question_number": 27, "clean_option_a": "ฉันสามารถจัดการงานหลายๆ อย่างพร้อมกันได้อย่างเป็นระบบระเบียบ", "strength_code_a": "S12", "clean_option_b": "การได้เรียนรู้มุมมองใหม่ๆ ทำให้ฉันสามารถเปลี่ยนความคิดเดิมๆ ได้", "strength_code_b": "S28"}, {"question_number": 28, "clean_option_a": "ในสถานการณ์ฉุกเฉิน ฉันเป็นคนที่สามารถตัดสินใจและนำทางทีมได้", "strength_code_a": "S13", "clean_option_b": "คนอื่นมักจะแปลกใจที่ฉันยังคงใจเย็นได้ในสถานการณ์ที่วุ่นวาย", "strength_code_b": "S29"}, {"question_number": 29, "clean_option_a": "ฉันสามารถทำงานที่ต้องใช้ความอดทนสูงและใช้เวลานานได้ดี", "strength_code_a": "S14", "clean_option_b": "ฉันไม่เคยยอมแพ้กับอะไรง่ายๆ และจะลุกขึ้นสู้ใหม่เสมอ", "strength_code_b": "S30"}, {"question_number": 30, "clean_option_a": "\"วัดผลสองครั้ง ตัดสินใจครั้งเดียว\" คือแนวทางการทำงานของฉัน", "strength_code_a": "S15", "clean_option_b": "ฉันสามารถรับรู้และเข้าใจความรู้สึกของคนอื่นได้ราวกับเป็นความรู้สึกของตนเอง", "strength_code_b": "S16"}, {"question_number": 31, "clean_option_a": "ฉันมีความสุขกับการออกแบบระบบหรือกระบวนการทำงานให้มีประสิทธิภาพ", "strength_code_a": "S01", "clean_option_b": "การสื่อสารอย่างสม่ำเสมอคือหัวใจสำคัญในการทำงานสำหรับฉัน", "strength_code_b": "S18"}, {"question_number": 32, "clean_option_a": "ฉันมักจะถามตัวเองว่า \"อีก 5 ปีข้างหน้า เราควรจะไปอยู่ที่จุดไหน?\"", "strength_code_a": "S02", "clean_option_b": "การเป็นส่วนหนึ่งของการเติบโตของใครสักคนเป็นสิ่งที่เติมเต็มฉัน", "strength_code_b": "S19"}, {"question_number": 33, "clean_option_a": "ฉันสามารถเปลี่ยนข้อมูลที่น่าเบื่อให้กลายเป็นเรื่องราวที่น่าตื่นเต้นได้", "strength_code_a": "S03", "clean_option_b": "\"เรา\" สำคัญกว่า \"ฉัน\" เมื่อพูดถึงความสำเร็จของงาน", "strength_code_b": "S20"}, {"question_number": 34, "clean_option_a": "การทำความเข้าใจทฤษฎีหรือแนวคิดที่เป็นนามธรรมเป็นเรื่องสนุกสำหรับฉัน", "strength_code_a": "S04", "clean_option_b": "ถ้าการกระทำนั้นขัดกับหลักการของฉัน ฉันจะไม่ทำมันเด็ดขาด", "strength_code_b": "S21"}, {"question_number": 35, "clean_option_a": "ฉันจะรู้สึกกระตือรือร้นเป็นพิเศษเมื่อได้ทำงานที่ท้าทายความสามารถ", "strength_code_a": "S05", "clean_option_b": "ฉันรับผิดชอบต่องานของฉันอย่างเต็มที่ ไม่ว่าผลจะออกมาดีหรือไม่ดี", "strength_code_b": "S22"}, {"question_number": 36, "clean_option_a": "\"มันน่าจะมีวิธีที่ดีกว่านี้\" เป็นคำถามที่ฉันถามตัวเองอยู่เสมอ", "strength_code_a": "S06", "clean_option_b": "ความเป็นธรรมเป็นสิ่งสำคัญที่สุดสำหรับฉันในการทำงานร่วมกับผู้อื่น", "strength_code_b": "S23"}, {"question_number": 37, "clean_option_a": "ฉันใช้เวลาว่างในการอ่านหนังสือหรือดูสารคดีเพื่อหาความรู้เพิ่มเติม", "strength_code_a": "S07", "clean_option_b": "ฉันเปิดรับฟังคำวิจารณ์และข้อเสนอแนะจากคนอื่นเสมอ", "strength_code_b": "S24"}, {"question_number": 38, "clean_option_a": "ฉันมักจะให้กำลังใจคนรอบข้างและทำให้พวกเขามองเห็นด้านบวกของปัญหา", "strength_code_a": "S08", "clean_option_b": "ฉันจะยืนหยัดเพื่อปกป้องทีมหรือเพื่อนร่วมงานที่ถูกปฏิบัติอย่างไม่เป็นธรรม", "strength_code_b": "S25"}, {"question_number": 39, "clean_option_a": "เมื่อเกิดปัญหาขึ้น ฉันจะมุ่งไปที่การหาทางแก้ไข ไม่ใช่หาคนผิด", "strength_code_a": "S09", "clean_option_b": "ฉันฝึกฝนที่จะอยู่กับปัจจุบันขณะ แทนที่จะกังวลเรื่องอดีตหรืออนาคต", "strength_code_b": "S26"}, {"question_number": 40, "clean_option_a": "ฉันชอบที่จะเป็นคนแรกที่ได้ทดลองทำสิ่งใหม่ๆ", "strength_code_a": "S10", "clean_option_b": "ฉันรู้สึกมีพลังและทำงานได้ดีที่สุดในสถานการณ์ที่เปลี่ยนแปลงตลอดเวลา", "strength_code_b": "S27"}, {"question_number": 41, "clean_option_a": "ฉันมีแรงผลักดันจากภายในที่ต้องการทำสิ่งต่างๆ ให้สำเร็จอยู่ตลอดเวลา", "strength_code_a": "S11", "clean_option_b": "ฉันไม่ยึดติดกับวิธีการเดิมๆ และพร้อมที่จะปรับเปลี่ยนเมื่อเจอข้อมูลใหม่", "strength_code_b": "S28"}, {"question_number": 42, "clean_option_a": "การสร้างแผนงานที่มีขั้นตอนชัดเจนช่วยให้ฉันทำงานได้ดีขึ้น", "strength_code_a": "S12", "clean_option_b": "แม้จะมีความขัดแย้งเกิดขึ้น ฉันก็ยังสามารถรักษาท่าทีที่สงบเยือกเย็นไว้ได้", "strength_code_b": "S29"}, {"question_number": 43, "clean_option_a": "การลังเลที่จะตัดสินใจทำให้ฉันรู้สึกอึดอัด", "strength_code_a": "S13", "clean_option_b": "ทุกครั้งที่ล้มเหลว ฉันจะใช้เวลาวิเคราะห์เพื่อเรียนรู้จากมัน", "strength_code_b": "S30"}, {"question_number": 44, "clean_option_a": "\"ความมุ่งมั่น\" คือคำที่คนอื่นมักใช้อธิบายตัวฉัน", "strength_code_a": "S14", "clean_option_b": "ฉันให้ความสำคัญกับการสร้างความสัมพันธ์ที่จริงใจและลึกซึ้งกับคนรอบข้าง", "strength_code_b": "S16"}, {"question_number": 45, "clean_option_a": "ฉันมักจะเป็นคนที่มองเห็นข้อผิดพลาดเล็กๆ น้อยๆ ที่คนอื่นอาจมองข้ามไป", "strength_code_a": "S15", "clean_option_b": "ฉันมองเห็นศักยภาพที่ซ่อนอยู่ในตัวผู้อื่น และมีความสุขที่ได้ช่วยให้เขาเติบโต", "strength_code_b": "S17"}, {"question_number": 46, "clean_option_a": "คนอื่นมักจะมาขอความเห็นจากฉันเรื่องการวางกลยุทธ์", "strength_code_a": "S01", "clean_option_b": "การสอนงานหรือเป็นพี่เลี้ยงให้คนอื่นเป็นสิ่งที่ฉันทำได้ดี", "strength_code_b": "S19"}, {"question_number": 47, "clean_option_a": "วิสัยทัศน์ที่ชัดเจนเกี่ยวกับอนาคตช่วยให้ฉันตัดสินใจในปัจจุบันได้ดีขึ้น", "strength_code_a": "S02", "clean_option_b": "ฉันทำงานได้ดีที่สุดเมื่อได้ระดมสมองและแลกเปลี่ยนความคิดเห็นกับทีม", "strength_code_b": "S20"}, {"question_number": 48, "clean_option_a": "ฉันเชื่อว่าการสร้างอารมณ์ร่วมเป็นสิ่งสำคัญในการโน้มน้าวใจคน", "strength_code_a": "S03", "clean_option_b": "ความซื่อสัตย์ต่อหลักการสำคัญกว่าการเป็นที่รักของทุกคน", "strength_code_b": "S21"}, {"question_number": 49, "clean_option_a": "ฉันสนุกกับการคิดหาคำอธิบายง่ายๆ สำหรับแนวคิดที่ซับซ้อน", "strength_code_a": "S04", "clean_option_b": "ถ้าฉันทำผิดพลาด ฉันจะเป็นคนแรกที่ยอมรับและแก้ไขมัน", "strength_code_b": "S22"}, {"question_number": 50, "clean_option_a": "ฉันจะทบทวนเป้าหมายของตัวเองอย่างสม่ำเสมอเพื่อให้แน่ใจว่ายังคงเดินถูกทาง", "strength_code_a": "S05", "clean_option_b": "กฎเกณฑ์มีไว้เพื่อให้ทุกคนได้รับการปฏิบัติอย่างเท่าเทียมกัน", "strength_code_b": "S23"}, {"question_number": 51, "clean_option_a": "สภาพแวดล้อมที่จำเจและไม่มีอะไรใหม่ๆ ทำให้ฉันรู้สึกเบื่อหน่าย", "strength_code_a": "S06", "clean_option_b": "ฉันตระหนักดีว่าตนเองไม่ได้รู้ทุกเรื่องและต้องการความช่วยเหลือจากผู้อื่น", "strength_code_b": "S24"}, {"question_number": 52, "clean_option_a": "\"ทำไม\" และ \"อย่างไร\" เป็นคำถามที่ฉันถามบ่อยที่สุด", "strength_code_a": "S07", "clean_option_b": "ฉันมีความกล้าที่จะทำในสิ่งที่เสี่ยง หากเชื่อว่ามันจะนำไปสู่ผลลัพธ์ที่ดีกว่า", "strength_code_b": "S25"}, {"question_number": 53, "clean_option_a": "ต่อให้สถานการณ์จะดูเลวร้าย ฉันก็ยังมองหาแง่มุมดีๆ จนเจอ", "strength_code_a": "S08", "clean_option_b": "การหยุดพักเพื่อหายใจลึกๆ ช่วยให้ฉันจัดการกับความเครียดได้", "strength_code_b": "S26"}, {"question_number": 54, "clean_option_a": "การแก้ปัญหาเฉพาะหน้าเป็นสิ่งที่ฉันทำได้ดี", "strength_code_a": "S09", "clean_option_b": "การปรับตัวให้เข้ากับคนหรือสภาพแวดล้อมใหม่ๆ เป็นเรื่องง่ายสำหรับฉัน", "strength_code_b": "S27"}, {"question_number": 55, "clean_option_a": "ฉันมักจะเป็นคนเสนอไอเดียใหม่ๆ ในที่ประชุม", "strength_code_a": "S10", "clean_option_b": "ความคิดของฉันเปลี่ยนแปลงและพัฒนาอยู่เสมอตามข้อมูลที่ได้รับ", "strength_code_b": "S28"}, {"question_number": 56, "clean_option_a": "การได้ทำสิ่งต่างๆ ให้สำเร็จเป็นแหล่งพลังงานที่สำคัญของฉัน", "strength_code_a": "S11", "clean_option_b": "ในสถานการณ์วิกฤต ฉันมักจะเป็นคนที่คนอื่นพึ่งพาเพื่อให้สถานการณ์สงบลง", "strength_code_b": "S29"}, {"question_number": 57, "clean_option_a": "ฉันชอบที่จะมีโครงสร้างและระบบที่ชัดเจนในการทำงาน", "strength_code_a": "S12", "clean_option_b": "ฉันมองว่าความพยายามที่ไม่ยอมแพ้สำคัญกว่าพรสวรรค์", "strength_code_b": "S30"}, {"question_number": 58, "clean_option_a": "การตัดสินใจที่รวดเร็วดีกว่าการไม่ตัดสินใจอะไรเลย", "strength_code_a": "S13", "clean_option_b": "ฉันมักจะหาโอกาสพูดคุยและทำความรู้จักกับเพื่อนร่วมงานในระดับที่ลึกซึ้งขึ้น", "strength_code_b": "S16"}, {"question_number": 59, "clean_option_a": "ฉันไม่ย่อท้อต่อความล้มเหลวระหว่างทาง ตราบใดที่ยังไม่ถึงเป้าหมายสุดท้าย", "strength_code_a": "S14", "clean_option_b": "ฉันรู้สึกเติมเต็มเมื่อได้ช่วยให้ใครสักคนค้นพบและพัฒนาจุดแข็งของเขา", "strength_code_b": "S17"}, {"question_number": 60, "clean_option_a": "ฉันมักจะใช้เวลาในการคิดไตร่ตรองอย่างรอบคอบก่อนที่จะตัดสินใจ", "strength_code_a": "S15", "clean_option_b": "ฉันสามารถปรับวิธีการสื่อสารให้เข้ากับผู้ฟังแต่ละคนได้", "strength_code_b": "S18"}, {"question_number": 61, "clean_option_a": "ฉันสามารถแยกแยะรูปแบบที่ซ่อนอยู่ในข้อมูลที่ดูวุ่นวายได้", "strength_code_a": "S01", "clean_option_b": "ฉันให้คุณค่ากับความสำเร็จของทีมมากกว่าความสำเร็จส่วนบุคคล", "strength_code_b": "S20"}, {"question_number": 62, "clean_option_a": "ฉันชอบที่จะพูดคุยเกี่ยวกับความเป็นไปได้ในอนาคตมากกว่าปัญหาในอดีต", "strength_code_a": "S02", "clean_option_b": "ฉันไม่ประนีประนอมกับสิ่งที่ขัดต่อคุณค่าและความเชื่อของฉัน", "strength_code_b": "S21"}, {"question_number": 63, "clean_option_a": "ฉันสามารถทำให้เป้าหมายที่ดูธรรมดากลายเป็นภารกิจที่น่าตื่นเต้นได้", "strength_code_a": "S03", "clean_option_b": "ความน่าเชื่อถือคือคุณสมบัติที่สำคัญที่สุดสำหรับฉัน", "strength_code_b": "S22"}, {"question_number": 64, "clean_option_a": "ฉันมักจะมองหากรอบแนวคิดหรือทฤษฎีเพื่อทำความเข้าใจโลก", "strength_code_a": "S04", "clean_option_b": "การตัดสินใจของฉันอยู่บนพื้นฐานของข้อมูลและหลักการ ไม่ใช่ความชอบส่วนตัว", "strength_code_b": "S23"}, {"question_number": 65, "clean_option_a": "ฉันจะแบ่งเป้าหมายใหญ่ให้เป็นเป้าหมายย่อยๆ ที่สามารถลงมือทำได้", "strength_code_a": "S05", "clean_option_b": "การยอมรับว่าตนเองไม่สมบูรณ์แบบทำให้ฉันเปิดใจเรียนรู้มากขึ้น", "strength_code_b": "S24"}, {"question_number": 66, "clean_option_a": "ฉันมักจะมีไอเดียแปลกใหม่ที่คนอื่นอาจนึกไม่ถึง", "strength_code_a": "S06", "clean_option_b": "ฉันพร้อมที่จะเสี่ยงเพื่อปกป้องคุณค่าที่ฉันยึดถือ", "strength_code_b": "S25"}, {"question_number": 67, "clean_option_a": "การได้สำรวจหัวข้อใหม่ๆ ที่ฉันไม่เคยรู้มาก่อนเป็นเรื่องน่าสนุก", "strength_code_a": "S07", "clean_option_b": "ฉันให้ความสำคัญกับการมีเวลาอยู่กับตัวเองเพื่อทบทวนความคิด", "strength_code_b": "S26"}, {"question_number": 68, "clean_option_a": "ฉันเชื่อว่าทัศนคติเชิงบวกสามารถสร้างความเปลี่ยนแปลงที่ยิ่งใหญ่ได้", "strength_code_a": "S08", "clean_option_b": "แทนที่จะฝืนสู้กับปัญหา ฉันมักจะหาทางใช้ประโยชน์จากสถานการณ์นั้น", "strength_code_b": "S27"}, {"question_number": 69, "clean_option_a": "ฉันมองปัญหาเป็นเหมือนเกมปริศนาที่รอการไขคำตอบ", "strength_code_a": "S09", "clean_option_b": "ฉันไม่มีปัญหาในการล้มเลิกแผนเดิมหากสถานการณ์บังคับ", "strength_code_b": "S28"}, {"question_number": 70, "clean_option_a": "การรอให้คนอื่นเริ่มก่อนทำให้ฉันรู้สึกอึดอัด", "strength_code_a": "S10", "clean_option_b": "ฉันสามารถควบคุมการแสดงออกทางสีหน้าและอารมณ์ได้ดี", "strength_code_b": "S29"}, {"question_number": 71, "clean_option_a": "ความรู้สึกของการได้ทำงานให้เสร็จสิ้นเป็นแรงจูงใจที่สำคัญของฉัน", "strength_code_a": "S11", "clean_option_b": "ฉันเชื่อว่าความสำเร็จที่แท้จริงมาจากการไม่ยอมแพ้", "strength_code_b": "S30"}, {"question_number": 72, "clean_option_a": "ฉันชอบวางแผนการทำงานในแต่ละวันเพื่อให้แน่ใจว่าจะไม่พลาดสิ่งสำคัญ", "strength_code_a": "S12", "clean_option_b": "ฉันมักจะสังเกตเห็นความเปลี่ยนแปลงเล็กๆ น้อยๆ ในอารมณ์ของคนรอบข้าง", "strength_code_b": "S16"}, {"question_number": 73, "clean_option_a": "ฉันมีความมั่นใจในการตัดสินใจของตัวเอง", "strength_code_a": "S13", "clean_option_b": "การได้เห็นคนอื่นประสบความสำเร็จจากคำแนะนำของฉันเป็นรางวัลที่ดีที่สุด", "strength_code_b": "S17"}, {"question_number": 74, "clean_option_a": "ฉันเชื่อว่าความสำเร็จที่ยิ่งใหญ่ต้องแลกมาด้วยความพยายามอย่างไม่หยุดหย่อน", "strength_code_a": "S14", "clean_option_b": "ฉันให้ความสำคัญกับการเลือกใช้ภาษาที่เหมาะสมกับสถานการณ์", "strength_code_b": "S18"}, {"question_number": 75, "clean_option_a": "ความรอบคอบช่วยป้องกันไม่ให้เกิดความผิดพลาดร้ายแรงตามมา", "strength_code_a": "S15", "clean_option_b": "ฉันมักจะมองหาโอกาสที่จะมอบหมายงานที่ท้าทายเพื่อให้ทีมได้เติบโต", "strength_code_b": "S19"}, {"question_number": 76, "clean_option_a": "การวางแผนระยะยาวเป็นเรื่องธรรมชาติสำหรับฉัน ไม่ใช่เรื่องที่ต้องฝืนทำ", "strength_code_a": "S01", "clean_option_b": "การทำตามหลักการทำให้ฉันสามารถตัดสินใจได้อย่างสม่ำเสมอและไม่ลำเอียง", "strength_code_b": "S21"}, {"question_number": 77, "clean_option_a": "ภาพของอนาคตที่ฉันต้องการสร้างขึ้นเป็นสิ่งที่ชัดเจนในใจของฉันเสมอ", "strength_code_a": "S02", "clean_option_b": "ถ้าฉันให้สัญญา ฉันจะทำทุกวิถีทางเพื่อรักษาสัญญานั้น", "strength_code_b": "S22"}, {"question_number": 78, "clean_option_a": "ฉันสามารถเลือกใช้คำพูดที่สร้างพลังและแรงบันดาลใจให้ผู้คนได้", "strength_code_a": "S03", "clean_option_b": "ฉันเชื่อว่าทุกคนควรอยู่ภายใต้กฎเกณฑ์เดียวกัน", "strength_code_b": "S23"}, {"question_number": 79, "clean_option_a": "การถกเถียงเรื่องแนวคิดหรือปรัชญาเป็นสิ่งที่ฉันสนใจ", "strength_code_a": "S04", "clean_option_b": "ฉันชอบที่จะยกย่องและฉลองความสำเร็จของเพื่อนร่วมงาน", "strength_code_b": "S24"}, {"question_number": 80, "clean_option_a": "หากไม่มีเป้าหมายที่ชัดเจน ฉันจะรู้สึกไร้ทิศทาง", "strength_code_a": "S05", "clean_option_b": "ความกล้าหาญไม่ได้หมายถึงการไม่กลัว แต่หมายถึงการลงมือทำทั้งๆ ที่กลัว", "strength_code_b": "S25"}, {"question_number": 81, "clean_option_a": "ฉันเปิดรับไอเดียใหม่ๆ จากทุกทิศทาง", "strength_code_a": "S06", "clean_option_b": "การตระหนักรู้ในลมหายใจของตัวเองช่วยให้ฉันสงบลงได้", "strength_code_b": "S26"}, {"question_number": 82, "clean_option_a": "โลกเต็มไปด้วยสิ่งที่น่าสนใจและฉันอยากจะเรียนรู้ให้ได้มากที่สุด", "strength_code_a": "S07", "clean_option_b": "\"ความยืดหยุ่น\" คือกุญแจสำคัญในการรับมือกับโลกที่เปลี่ยนแปลงตลอดเวลา", "strength_code_b": "S27"}, {"question_number": 83, "clean_option_a": "การมองโลกในแง่ดีช่วยให้ฉันฟื้นตัวจากความผิดหวังได้เร็ว", "strength_code_a": "S08", "clean_option_b": "ฉันมองว่าการเปลี่ยนใจเมื่อได้ข้อมูลใหม่คือความเข้มแข็ง ไม่ใช่อ่อนแอ", "strength_code_b": "S28"}, {"question_number": 84, "clean_option_a": "ฉันไม่กลัวที่จะเผชิญหน้ากับปัญหาที่คนอื่นพยายามหลีกเลี่ยง", "strength_code_a": "S09", "clean_option_b": "คำพูดและการกระทำของฉันมักจะเยือกเย็นกว่าความรู้สึกข้างใน", "strength_code_b": "S29"}, {"question_number": 85, "clean_option_a": "ฉันมักจะมองหาโอกาสที่จะได้เริ่มต้นโครงการใหม่ๆ", "strength_code_a": "S10", "clean_option_b": "ฉันนับถือคนที่มีความทรหดอดทนและไม่ยอมแพ้ต่อโชคชะตา", "strength_code_b": "S30"}, {"question_number": 86, "clean_option_a": "ฉันรู้สึกว่าวันที่มีประสิทธิผลคือวันที่ฉันได้ทำงานเสร็จไปหลายอย่าง", "strength_code_a": "S11", "clean_option_b": "การเข้าใจมุมมองของคนอื่นเป็นสิ่งสำคัญก่อนที่จะตัดสินใจอะไรลงไป", "strength_code_b": "S16"}, {"question_number": 87, "clean_option_a": "ฉันเชื่อว่ากระบวนการที่ดีจะนำไปสู่ผลลัพธ์ที่ดี", "strength_code_a": "S12", "clean_option_b": "การได้เห็นคนอื่นประสบความสำเร็จจากคำแนะนำของฉันเป็นรางวัลที่ดีที่สุด", "strength_code_b": "S17"}, {"question_number": 88, "clean_option_a": "เมื่อถึงเวลาที่ต้องตัดสินใจ ฉันจะไม่ปล่อยให้มันค้างคา", "strength_code_a": "S13", "clean_option_b": "ฉันให้ความสำคัญกับการเลือกใช้ภาษาที่เหมาะสมกับสถานการณ์", "strength_code_b": "S18"}, {"question_number": 89, "clean_option_a": "ฉันสามารถรักษาพลังใจในการทำงานหนักได้เป็นระยะเวลานาน", "strength_code_a": "S14", "clean_option_b": "ฉันเชื่อว่าทุกคนมีศักยภาพที่จะเติบโตและพัฒนาได้", "strength_code_b": "S19"}, {"question_number": 90, "clean_option_a": "ฉันมักจะถามคำถามเพื่อหาข้อมูลเพิ่มเติมก่อนที่จะสรุปอะไรลงไป", "strength_code_a": "S15", "clean_option_b": "การสร้างฉันทามติและการมีส่วนร่วมของทีมเป็นสิ่งสำคัญสำหรับฉัน", "strength_code_b": "S20"}];
+    const definitions = { "S01": "สถาปนิก (The Architect)", "S02": "นักพยากรณ์ (The Forecaster)", "S03": "นักปลุกพลัง (The Energizer)", "S04": "นักคิด (The Thinker)", "S05": "นักล่าเป้าหมาย (The Target Hunter)", "S06": "ศิลปิน (The Artist)", "S07": "นักเรียนรู้ (The Learner)", "S08": "นักบุญ (The Saint)", "S09": "นักแก้ปัญหา (The Troubleshooter)", "S10": "นักบุกเบิก (The Pioneer)", "S11": "นักปฏิบัติ (The Executor)", "S12": "ผู้ควบคุมหอการบิน (The Air Traffic Controller)", "S13": "ผู้บัญชาการ (The Commander)", "S14": "นักวิ่งมาราธอน (The Marathon Runner)", "S15": "ผู้ดูแลประภาคาร (The Lighthouse Keeper)", "S16": "ที่ปรึกษา (The Counselor)", "S17": "นักการทูต (The Diplomat)", "S18": "นักเล่าเรื่อง (The Storyteller)", "S19": "โค้ช (The Coach)", "S20": "วาทยกร (The Conductor)", "S21": "ทวารบาล (The Gatekeeper)", "S22": "ผู้รับผิดชอบ (The Accountable)", "S23": "ผู้พิพากษา (The Judge)", "S24": "ผู้ปิดทองหลังพระ (The Unsung Hero)", "S25": "อัศวิน (The Knight)", "S26": "ผู้มีสติ (The Mindful Person)", "S27": "นักโต้คลื่น (The Wave Rider)", "S28": "นักเล่นแร่แปรธาตุ (The Alchemist)", "S29": "นักแกะสลักน้ำแข็ง (The Ice Sculptor)", "S30": "นักมวยผู้ทรหด (The Tenacious Boxer)" };
+    // --- 2. DATA MAPPING ---
+    const strengthToGroupMap = { "S01": "พลังแห่งวิสัยทัศน์ (Visionary Power)", "S02": "พลังแห่งวิสัยทัศน์ (Visionary Power)", "S03": "พลังแห่งวิสัยทัศน์ (Visionary Power)", "S04": "พลังแห่งวิสัยทัศน์ (Visionary Power)", "S05": "พลังแห่งวิสัยทัศน์ (Visionary Power)", "S06": "พลังแห่งการสร้างสรรค์ (Creative Power)", "S07": "พลังแห่งการสร้างสรรค์ (Creative Power)", "S08": "พลังแห่งการสร้างสรรค์ (Creative Power)", "S09": "พลังแห่งการสร้างสรรค์ (Creative Power)", "S10": "พลังแห่งการสร้างสรรค์ (Creative Power)", "S11": "พลังแห่งการขับเคลื่อน (Driving Power)", "S12": "พลังแห่งการขับเคลื่อน (Driving Power)", "S13": "พลังแห่งการขับเคลื่อน (Driving Power)", "S14": "พลังแห่งการขับเคลื่อน (Driving Power)", "S15": "พลังแห่งการขับเคลื่อน (Driving Power)", "S16": "พลังแห่งการเชื่อมโยง (Connecting Power)", "S17": "พลังแห่งการเชื่อมโยง (Connecting Power)", "S18": "พลังแห่งการเชื่อมโยง (Connecting Power)", "S19": "พลังแห่งการเชื่อมโยง (Connecting Power)", "S20": "พลังแห่งการเชื่อมโยง (Connecting Power)", "S21": "พลังแห่งคุณธรรม (Integrity Power)", "S22": "พลังแห่งคุณธรรม (Integrity Power)", "S23": "พลังแห่งคุณธรรม (Integrity Power)", "S24": "พลังแห่งคุณธรรม (Integrity Power)", "S25": "พลังแห่งคุณธรรม (Integrity Power)", "S26": "พลังแห่งการยืนหยัด (Resilient Power)", "S27": "พลังแห่งการยืนหยัด (Resilient Power)", "S28": "พลังแห่งการยืนหยัด (Resilient Power)", "S29": "พลังแห่งการยืนหยัด (Resilient Power)", "S30": "พลังแห่งการยืนหยัด (Resilient Power)" };
+    const groupDefinitions = {"พลังแห่งวิสัยทัศน์ (Visionary Power)": "คือพลังที่ตอบคำถามที่สำคัญที่สุดว่า 'เรากำลังจะไปที่ไหน และทำไมที่นั่นจึงสำคัญ' พลังนี้ไม่ได้มองแค่ปัจจุบัน แต่คือการวาดภาพอนาคตที่น่าตื่นเต้นและชัดเจนจนจับต้องได้ พร้อมทั้งวางแผนที่เชิงกลยุทธ์เสมือนเป็น 'เข็มทิศ' ที่เที่ยงตรง เพื่อให้แน่ใจว่าทุกย่างก้าวของการทำงานมีความหมายและมุ่งไปสู่จุดหมายเดียวกัน",
+    "พลังแห่งการสร้างสรรค์ (Creative Power)": "คือพลังที่กล้าตั้งคำถามกับสิ่งที่เป็นอยู่ว่า 'แล้วถ้ามีวิธีที่ดีกว่านี้ล่ะ?' พลังนี้คือการท้าทายความจำเจและคิดนอกกรอบ เปรียบเสมือน 'หลอดไฟ' ที่ส่องสว่างขึ้นมาในความมืด มันคือการจุดประกายไอเดียใหม่ๆ, ค้นพบทางออกที่ไม่เคยมีใครเห็น, และผลักดันให้เกิดนวัตกรรมที่สร้างความแตกต่างและนำพาองค์กรไปสู่การเติบโตที่ก้าวกระโดด",
+    "พลังแห่งการขับเคลื่อน (Driving Power)": "คือพลังที่เปลี่ยนวิสัยทัศน์ให้กลายเป็นความจริง มันคือแรงขับเคลื่อนที่ไม่เคยหยุดนิ่งซึ่งถามว่า 'เราจะทำให้มันเกิดขึ้นได้อย่างไร และเมื่อไหร่?' พลังนี้เปรียบเสมือน 'เครื่องยนต์' ที่ทรงพลังซึ่งแปลงแผนการที่สวยหรูให้กลายเป็นผลลัพธ์ที่จับต้องได้ มันคือการลงมือทำ, การจัดการอย่างมีประสิทธิภาพ, และความมุ่งมั่นที่จะผลักดันงานให้สำเร็จลุล่วง",
+    "พลังแห่งการเชื่อมโยง (Connecting Power)": "คือพลังที่สร้าง 'ความร่วมมือ' ให้เกิดขึ้นอย่างแท้จริง มันตอบคำถามว่า 'เราจะทำงานร่วมกันให้ดีที่สุดได้อย่างไร?' พลังนี้เปรียบเสมือน 'เครือข่ายอินเทอร์เน็ต' ที่เชื่อมโยงทุกคนเข้าไว้ด้วยกัน ทำให้เกิดการสื่อสารที่ไร้รอยต่อ, ความเข้าอกเข้าใจ, และความไว้วางใจ ซึ่งเป็นรากฐานสำคัญในการสร้างทีมที่แข็งแกร่งและวัฒนธรรมองค์กรที่ยอดเยี่ยม",
+    "พลังแห่งคุณธรรม (Integrity Power)": "คือพลังที่เป็นแกนหลักทางจริยธรรมซึ่งคอยถามว่า 'สิ่งที่เรากำลังทำนั้นถูกต้องหรือไม่?' พลังนี้เปรียบเสมือน 'ตราชั่ง' ที่เที่ยงตรง คอยสร้างความสมดุลระหว่างผลประโยชน์กับหลักการ มันคือความซื่อสัตย์, ความรับผิดชอบ, และความเป็นธรรมที่สร้างความไว้วางใจจากทั้งภายในและภายนอกองค์กร ทำให้ความสำเร็จนั้นยั่งยืนและน่าภาคภูมิใจ",
+    "พลังแห่งการยืนหยัด (Resilient Power)": "คือพลังที่แสดงศักยภาพสูงสุดในยามวิกฤต มันคือคำตอบของคำถามที่ว่า 'เมื่อเราล้มลง เราจะลุกขึ้นสู้อย่างไร?' พลังนี้เปรียบเสมือน 'ต้นหลิว' ที่สามารถโอนอ่อนผ่อนตามพายุแต่ไม่เคยหักโค่น มันคือความสามารถในการปรับตัว, การฟื้นตัวจากความล้มเหลว, และการรักษาความสงบภายใต้แรงกดดัน เพื่อให้องค์กรสามารถผ่านพ้นทุกอุปสรรคและกลับมาแข็งแกร่งกว่าเดิม"};
+    const groupIcons = {
+    "พลังแห่งวิสัยทัศน์ (Visionary Power)": "<img src='https://s.imgz.io/2025/09/16/Vision56e7a80058003020.png' alt='Vision'>",
+    "พลังแห่งการสร้างสรรค์ (Creative Power)": "<img src='https://s.imgz.io/2025/09/16/Creativityb8dee1e14e3cc759.png' alt='Creativity'>",
+    "พลังแห่งการขับเคลื่อน (Driving Power)": "<img src='https://s.imgz.io/2025/09/16/Drivingb7fc63df46458c3b.png' alt='Driving Power'>",
+    "พลังแห่งการเชื่อมโยง (Connecting Power)": "<img src='https://s.imgz.io/2025/09/16/Connectaa37145b1eefda92.png' alt='Connecting Power'>",
+    "พลังแห่งคุณธรรม (Integrity Power)": "<img src='https://s.imgz.io/2025/09/16/Integrityab4dac6f760fa7e5.png' alt='Integrity Power'>",
+    "พลังแห่งการยืนหยัด (Resilient Power)": "<img src='https://s.imgz.io/2025/09/16/Resilientbd6db9760d1fb358.png' alt='Resilient Power'>"
+};
+    const groupStyles = { "พลังแห่งวิสัยทัศน์ (Visionary Power)": "theme-visionary", "พลังแห่งการสร้างสรรค์ (Creative Power)": "theme-creative", "พลังแห่งการขับเคลื่อน (Driving Power)": "theme-driving", "พลังแห่งการเชื่อมโยง (Connecting Power)": "theme-connecting", "พลังแห่งคุณธรรม (Integrity Power)": "theme-integrity", "พลังแห่งการยืนหยัด (Resilient Power)": "theme-resilient" };
+    
+    // --- 3. STATE ---
+    const QUESTIONS_PER_PAGE = 5;
+    let currentPage = 0;
+    const totalPages = Math.ceil(questions.length / QUESTIONS_PER_PAGE);
+    const userAnswers = new Array(questions.length).fill(null);
+    let employeeName = '';
+    let employeeId = '';
+    let employeeEmail = '';
+    
+    // --- 4. DOM ELEMENTS ---
+    const startContainer = document.getElementById('start-container');
+    const quizContainer = document.getElementById('quiz-container');
+    const questionsWrapper = document.getElementById('questions-wrapper');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const submitBtn = document.getElementById('submit-btn');
+    const pageIndicator = document.getElementById('page-indicator');
+    const resultsContainer = document.getElementById('results-container');
+    const groupResults = document.getElementById('group-results');
+    const top5Summary = document.getElementById('top-5-summary');
+    const customAlertOverlay = document.getElementById('custom-alert-overlay');
+    const customAlertMessage = document.getElementById('custom-alert-message');
+    const customAlertBtn = document.getElementById('custom-alert-btn');
+    const startBtn = document.getElementById('start-btn');
+    
+    // --- 5. FUNCTIONS ---
+    function submitDataToGoogleSheet(payload) {
+        console.log("Attempting to submit data:", payload);
+
+        function onSuccess(response) {
+            console.log("Success:", response);
+            setTimeout(() => {
+                showCustomAlert("กรุณาแคปหน้าจอเพื่อเก็บไว้สำหรับการอบรม Leadership Launchpad");
+            }, 500);
+        }
+
+        function onFailure(error) {
+            console.error("Error calling server function:", error);
+            setTimeout(() => {
+                showCustomAlert("การบันทึกข้อมูลล้มเหลว กรุณาติดต่อผู้ดูแล: " + error.message);
+            }, 500);
+        }
+
+        google.script.run
+            .withSuccessHandler(onSuccess)
+            .withFailureHandler(onFailure)
+            .saveData(payload);
+    }
+
+    function showCustomAlert(message) { customAlertMessage.textContent = message; customAlertOverlay.style.display = 'flex'; }
+    function hideCustomAlert() { customAlertOverlay.style.display = 'none'; }
+    function saveAnswers() {
+        const questionsOnPage = document.querySelectorAll('.question-block');
+        questionsOnPage.forEach(block => {
+            const questionIndex = parseInt(block.dataset.index);
+            const selectedOption = block.querySelector('input[name="q' + questionIndex + '"]:checked');
+            if (selectedOption) {
+                userAnswers[questionIndex] = selectedOption.value;
+            }
+        });
+    }
+
+    function validatePage() {
+        const start = currentPage * QUESTIONS_PER_PAGE;
+        const end = start + QUESTIONS_PER_PAGE;
+        for (let i = start; i < end && i < userAnswers.length; i++) {
+            if (userAnswers[i] === null) return false;
+        }
+        return true;
+    }
+
+    function renderPage() {
+        questionsWrapper.innerHTML = '';
+        const start = currentPage * QUESTIONS_PER_PAGE;
+        const end = start + QUESTIONS_PER_PAGE;
+        const questionsToShow = questions.slice(start, end);
+        questionsToShow.forEach((q, index) => {
+            const questionIndex = start + index;
+            const questionBlock = document.createElement('div');
+            questionBlock.className = 'question-block';
+            questionBlock.dataset.index = questionIndex;
+            const answerA = userAnswers[questionIndex] === 'A' ? 'checked' : '';
+            const answerB = userAnswers[questionIndex] === 'B' ? 'checked' : '';
+            questionBlock.innerHTML = `
+                <div class="question-text">${q.question_number}. โปรดเลือกข้อที่ตรงกับคุณมากที่สุด</div>
+                <div class="options">
+                    <label class="option-item">
+                        <input type="radio" name="q${questionIndex}" value="A" ${answerA}>
+                        <span class="option-label">${q.clean_option_a}</span>
+                    </label>
+                    <label class="option-item">
+                        <input type="radio" name="q${questionIndex}" value="B" ${answerB}>
+                        <span class="option-label">${q.clean_option_b}</span>
+                    </label>
+                </div>
+            `;
+            questionsWrapper.appendChild(questionBlock);
+        });
+        updateNavigation();
+    }
+
+    function updateNavigation() {
+        pageIndicator.textContent = `หน้า ${currentPage + 1} / ${totalPages}`;
+        prevBtn.disabled = currentPage === 0;
+        if (currentPage === totalPages - 1) {
+            nextBtn.style.display = 'none';
+            submitBtn.style.display = 'block';
+        } else {
+            nextBtn.style.display = 'block';
+            submitBtn.style.display = 'none';
+        }
+    }
+
+    function calculateAndShowResults() {
+        if (userAnswers.includes(null)) {
+            showCustomAlert('กรุณาตอบคำถามให้ครบทุกข้อก่อนส่งคำตอบ');
+            return;
+        }
+
+        const strengthCounts = {};
+        for(let i=1; i<=30; i++) {
+            strengthCounts['S' + String(i).padStart(2, '0')] = 0;
+        }
+
+        userAnswers.forEach((answer, index) => {
+            const question = questions[index];
+            const strengthCodeA = question.strength_code_a;
+            const strengthCodeB = question.strength_code_b;
+
+            if (answer === 'A') {
+                strengthCounts[strengthCodeA] += 5;
+                strengthCounts[strengthCodeB] += 1;
+            } else if (answer === 'B') {
+                strengthCounts[strengthCodeB] += 5;
+                strengthCounts[strengthCodeA] += 1;
+            }
+        });
+
+        const groupTotalScores = {
+            "พลังแห่งวิสัยทัศน์ (Visionary Power)": 0,
+            "พลังแห่งการสร้างสรรค์ (Creative Power)": 0,
+            "พลังแห่งการขับเคลื่อน (Driving Power)": 0,
+            "พลังแห่งการเชื่อมโยง (Connecting Power)": 0,
+            "พลังแห่งคุณธรรม (Integrity Power)": 0,
+            "พลังแห่งการยืนหยัด (Resilient Power)": 0
+        };
+
+        for (const code in strengthCounts) {
+            const group = strengthToGroupMap[code];
+            const score = strengthCounts[code];
+            if (group && groupTotalScores.hasOwnProperty(group)) {
+                groupTotalScores[group] += score;
+            }
+        }
+
+        const sortedGroups = Object.entries(groupTotalScores).sort(([, a], [, b]) => b - a);
+        const dominantGroup = sortedGroups[0];
+        const dominantGroupName = dominantGroup[0];
+
+        const sortedStrengths = Object.entries(strengthCounts).sort(([, a], [, b]) => b - a);
+        const top5Strengths = sortedStrengths.slice(0, 5);
+
+        // MODIFIED PART 1: Create a list of top 5 strengths with their codes for submission
+        const top5StrengthsForSubmission = top5Strengths.map(([code,]) => {
+            return `${definitions[code]} (${code})`;
+        });
+        
+        quizContainer.style.display = 'none';
+        resultsContainer.style.display = 'block';
+
+        const dominantGroupDefinition = groupDefinitions[dominantGroupName];
+        const dominantGroupIcon = groupIcons[dominantGroupName];
+        const dominantGroupTheme = groupStyles[dominantGroupName];
+        resultsContainer.className = 'container ' + dominantGroupTheme;
+        let groupHtml = `<div class="icon">${dominantGroupIcon || ''}</div>`;
+        groupHtml += `<h3>กลุ่มพลังที่โดดเด่นที่สุดของคุณคือ:</h3>`;
+        groupHtml += `<p class="dominant-group">${dominantGroupName}</p>`;
+        if (dominantGroupDefinition) {
+            groupHtml += `<p class="dominant-group-definition">${dominantGroupDefinition}</p>`;
+        }
+        groupResults.innerHTML = groupHtml;
+
+        // MODIFIED PART 2: Update the display to show the strength code
+        let top5Html = '<h3>จุดแข็ง 5 อันดับแรกของคุณ:</h3>';
+        top5Html += '<ol>';
+        top5Strengths.forEach(([code,]) => {
+            top5Html += `<li>${definitions[code] || code} (${code})</li>`;
+        });
+        top5Html += '</ol>';
+        top5Summary.innerHTML = top5Html;
+        
+        // MODIFIED PART 3: Submit the updated top5 list
+        const submissionData = {
+            employeeId: employeeId,
+            employeeName: employeeName,
+            email: employeeEmail,
+            dominantGroup: dominantGroupName,
+            top5: top5StrengthsForSubmission,
+            strengthCounts: strengthCounts,
+            groupTotalScores: groupTotalScores
+        };
+        
+        submitDataToGoogleSheet(submissionData);
+    }
+    // --- 6. EVENT LISTENERS ---
+    startBtn.addEventListener('click', () => {
+        const nameInput = document.getElementById('employeeName');
+        const idInput = document.getElementById('employeeId');
+        const emailInput = document.getElementById('employeeEmail');
+        if (nameInput.value.trim() === '' || idInput.value.trim() === '' || emailInput.value.trim() === '') {
+            showCustomAlert('กรุณากรอกข้อมูลให้ครบทุกช่อง');
+            return;
+        }
+        if (!emailInput.value.toLowerCase().endsWith('@airasia.com')) {
+            showCustomAlert('กรุณาใช้อีเมล์ของ AirAsia (@airasia.com) เท่านั้น');
+            return;
+        }
+        employeeName = nameInput.value.trim();
+        employeeId = idInput.value.trim();
+        employeeEmail = emailInput.value.trim();
+        startContainer.style.display = 'none';
+        quizContainer.style.display = 'block';
+        renderPage();
+    });
+    nextBtn.addEventListener('click', () => {
+        saveAnswers();
+        if (!validatePage()) {
+            showCustomAlert('กรุณาตอบคำถามให้ครบทุกข้อในหน้านี้ เพื่อไปหน้าถัดไป');
+            return;
+        }
+        if (currentPage < totalPages - 1) {
+            currentPage++;
+            renderPage();
+        }
+    });
+    prevBtn.addEventListener('click', () => {
+        saveAnswers();
+        if (currentPage > 0) {
+            currentPage--;
+            renderPage();
+        }
+    });
+    submitBtn.addEventListener('click', () => {
+        saveAnswers();
+        calculateAndShowResults();
+    });
+    customAlertBtn.addEventListener('click', hideCustomAlert);
+    customAlertOverlay.addEventListener('click', (event) => {
+        if (event.target === customAlertOverlay) hideCustomAlert();
+    });
+    // --- 7. INITIAL RENDER ---
+    document.addEventListener('DOMContentLoaded', () => {
+        startContainer.style.display = 'block';
+        quizContainer.style.display = 'none';
+        resultsContainer.style.display = 'none';
+    });
+</script>
+</body>
+</html>
