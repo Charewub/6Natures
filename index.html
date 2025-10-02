@@ -7,6 +7,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    
     <style>
         /* --- Zen Theme: General Styles --- */
         body {
@@ -163,13 +166,6 @@
             color: #adb5bd;
         }
         
-        /* --- Custom Modern Alert --- */
-        #custom-alert-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); display: none; justify-content: center; align-items: center; z-index: 1000; }
-        #custom-alert-box { background: #ffffff; padding: 40px; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.15); text-align: center; max-width: 90%; width: 400px; }
-        #custom-alert-message { font-size: 1.1em; color: #495057; margin: 0 0 25px 0; }
-        #custom-alert-btn { padding: 10px 30px; border: none; border-radius: 10px; background-color: #6c757d; color: white; font-size: 1em; font-weight: 700; cursor: pointer; transition: background-color 0.3s; }
-        #custom-alert-btn:hover { background-color: #5a6268; }
-
         /* --- Results Styling --- */
         #results-container {
             display: none;
@@ -294,7 +290,7 @@
         </div>
         <div class="form-group">
             <label for="employeeEmail">อีเมล์</label>
-            <input type="email" id="employeeEmail" placeholder="กรอกอีเมล์ (@airasia.com)">
+            <input type="email" id="employeeEmail" placeholder="กรอกอีเมล์ของท่าน">
         </div>
         <button id="start-btn" class="main-btn">เริ่มทำแบบทดสอบ</button>
     </div>
@@ -315,12 +311,8 @@
         <div id="top-5-summary"></div>
     </div>
     
-    <div id="custom-alert-overlay">
-        <div id="custom-alert-box">
-            <p id="custom-alert-message"></p>
-            <button id="custom-alert-btn">ตกลง</button>
-        </div>
-    </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
 <script>
     // --- 1. DATA ---
@@ -335,11 +327,11 @@
     "พลังแห่งคุณธรรม (Integrity Power)": "คือพลังที่เป็นแกนหลักทางจริยธรรมซึ่งคอยถามว่า 'สิ่งที่เรากำลังทำนั้นถูกต้องหรือไม่?' พลังนี้เปรียบเสมือน 'ตราชั่ง' ที่เที่ยงตรง คอยสร้างความสมดุลระหว่างผลประโยชน์กับหลักการ มันคือความซื่อสัตย์, ความรับผิดชอบ, และความเป็นธรรมที่สร้างความไว้วางใจจากทั้งภายในและภายนอกองค์กร ทำให้ความสำเร็จนั้นยั่งยืนและน่าภาคภูมิใจ",
     "พลังแห่งการยืนหยัด (Resilient Power)": "คือพลังที่แสดงศักยภาพสูงสุดในยามวิกฤต มันคือคำตอบของคำถามที่ว่า 'เมื่อเราล้มลง เราจะลุกขึ้นสู้อย่างไร?' พลังนี้เปรียบเสมือน 'ต้นหลิว' ที่สามารถโอนอ่อนผ่อนตามพายุแต่ไม่เคยหักโค่น มันคือความสามารถในการปรับตัว, การฟื้นตัวจากความล้มเหลว, และการรักษาความสงบภายใต้แรงกดดัน เพื่อให้องค์กรสามารถผ่านพ้นทุกอุปสรรคและกลับมาแข็งแกร่งกว่าเดิม"};
     const groupIcons = {
-    "พลังแห่งวิสัยทัศน์ (Visionary Power)": "<img src='https://s.imgz.io/2025/09/16/Vision56e7a80058003020.png' alt='Vision'>",
-    "พลังแห่งการสร้างสรรค์ (Creative Power)": "<img src='https://s.imgz.io/2025/09/16/Creativityb8dee1e14e3cc759.png' alt='Creativity'>",
-    "พลังแห่งการขับเคลื่อน (Driving Power)": "<img src='https://s.imgz.io/2025/09/16/Drivingb7fc63df46458c3b.png' alt='Driving Power'>",
+    "พลังแห่งวิสัยทัศน์ (Visionary Power)": "<img src='https://s.imgz.io/2025/09/18/Visione9072d69abfbe932.png' alt='Vision'>",
+    "พลังแห่งการสร้างสรรค์ (Creative Power)": "<img src='https://s.imgz.io/2025/09/18/Creative6130d3fda7d60935.png' alt='Creativity'>",
+    "พลังแห่งการขับเคลื่อน (Driving Power)": "<img src='https://s.imgz.io/2025/09/18/Drivingd1af403aa952dea6.png' alt='Driving Power'>",
     "พลังแห่งการเชื่อมโยง (Connecting Power)": "<img src='https://s.imgz.io/2025/09/16/Connectaa37145b1eefda92.png' alt='Connecting Power'>",
-    "พลังแห่งคุณธรรม (Integrity Power)": "<img src='https://s.imgz.io/2025/09/16/Integrityab4dac6f760fa7e5.png' alt='Integrity Power'>",
+    "พลังแห่งคุณธรรม (Integrity Power)": "<img src='https://s.imgz.io/2025/09/18/Integrityc10fc536a70cc345.png' alt='Integrity Power'>",
     "พลังแห่งการยืนหยัด (Resilient Power)": "<img src='https://s.imgz.io/2025/09/16/Resilientbd6db9760d1fb358.png' alt='Resilient Power'>"
 };
     const groupStyles = { "พลังแห่งวิสัยทัศน์ (Visionary Power)": "theme-visionary", "พลังแห่งการสร้างสรรค์ (Creative Power)": "theme-creative", "พลังแห่งการขับเคลื่อน (Driving Power)": "theme-driving", "พลังแห่งการเชื่อมโยง (Connecting Power)": "theme-connecting", "พลังแห่งคุณธรรม (Integrity Power)": "theme-integrity", "พลังแห่งการยืนหยัด (Resilient Power)": "theme-resilient" };
@@ -364,37 +356,72 @@
     const resultsContainer = document.getElementById('results-container');
     const groupResults = document.getElementById('group-results');
     const top5Summary = document.getElementById('top-5-summary');
-    const customAlertOverlay = document.getElementById('custom-alert-overlay');
-    const customAlertMessage = document.getElementById('custom-alert-message');
-    const customAlertBtn = document.getElementById('custom-alert-btn');
     const startBtn = document.getElementById('start-btn');
     
     // --- 5. FUNCTIONS ---
+
+    // NEW FUNCTION: To download the results container as a JPEG
+    function downloadResultsAsImage() {
+        const resultsElement = document.getElementById('results-container');
+        html2canvas(resultsElement, {
+            scale: 2 // Increase scale for better resolution
+        }).then(canvas => {
+            const link = document.createElement('a');
+            link.download = `Signature-Strengths-Results-${employeeId}.jpg`;
+            link.href = canvas.toDataURL('image/jpeg', 0.9); // Use JPEG format with 90% quality
+            link.click();
+        });
+    }
+
     function submitDataToGoogleSheet(payload) {
         console.log("Attempting to submit data:", payload);
 
         function onSuccess(response) {
             console.log("Success:", response);
             setTimeout(() => {
-                showCustomAlert("กรุณาแคปหน้าจอเพื่อเก็บไว้สำหรับการอบรม Leadership Launchpad");
+                // MODIFIED: Use SweetAlert2 with download option
+                Swal.fire({
+                    title: 'บันทึกผลลัพธ์สำเร็จ!',
+                    text: 'กรุณาบันทึกผลลัพธ์ของคุณเก็บไว้เพื่อใช้ในการอบรม',
+                    icon: 'success',
+                    showCancelButton: true,
+                    confirmButtonText: 'ตกลง',
+                    cancelButtonText: '<i class="fa fa-download"></i> ดาวน์โหลดเป็นรูปภาพ',
+                    cancelButtonColor: '#28a745',
+                }).then((result) => {
+                    if (result.dismiss === Swal.DismissReason.cancel) {
+                        // If the "Download" button is clicked
+                        downloadResultsAsImage();
+                    }
+                });
             }, 500);
         }
 
         function onFailure(error) {
             console.error("Error calling server function:", error);
             setTimeout(() => {
-                showCustomAlert("การบันทึกข้อมูลล้มเหลว กรุณาติดต่อผู้ดูแล: " + error.message);
+                 // MODIFIED: Use SweetAlert2 for error
+                Swal.fire({
+                    icon: 'error',
+                    title: 'เกิดข้อผิดพลาด',
+                    text: 'การบันทึกข้อมูลล้มเหลว กรุณาติดต่อผู้ดูแล: ' + error.message,
+                });
             }, 500);
         }
 
-        google.script.run
-            .withSuccessHandler(onSuccess)
-            .withFailureHandler(onFailure)
-            .saveData(payload);
+        // Check if google.script.run is available before calling
+        if (typeof google !== 'undefined' && google.script && google.script.run) {
+            google.script.run
+                .withSuccessHandler(onSuccess)
+                .withFailureHandler(onFailure)
+                .saveData(payload);
+        } else {
+            // Fallback for local testing when not on Google Apps Script
+            console.warn("google.script.run is not available. Simulating success.");
+            onSuccess("Local Test Success");
+        }
     }
 
-    function showCustomAlert(message) { customAlertMessage.textContent = message; customAlertOverlay.style.display = 'flex'; }
-    function hideCustomAlert() { customAlertOverlay.style.display = 'none'; }
     function saveAnswers() {
         const questionsOnPage = document.querySelectorAll('.question-block');
         questionsOnPage.forEach(block => {
@@ -459,7 +486,12 @@
 
     function calculateAndShowResults() {
         if (userAnswers.includes(null)) {
-            showCustomAlert('กรุณาตอบคำถามให้ครบทุกข้อก่อนส่งคำตอบ');
+            // MODIFIED: Use SweetAlert2
+            Swal.fire({
+                icon: 'warning',
+                title: 'ยังตอบไม่ครบ',
+                text: 'กรุณาตอบคำถามให้ครบทุกข้อก่อนส่งคำตอบ'
+            });
             return;
         }
 
@@ -505,8 +537,6 @@
 
         const sortedStrengths = Object.entries(strengthCounts).sort(([, a], [, b]) => b - a);
         const top5Strengths = sortedStrengths.slice(0, 5);
-
-        // MODIFIED PART 1: Create a list of top 5 strengths with their codes for submission
         const top5StrengthsForSubmission = top5Strengths.map(([code,]) => {
             return `${definitions[code]} (${code})`;
         });
@@ -526,7 +556,6 @@
         }
         groupResults.innerHTML = groupHtml;
 
-        // MODIFIED PART 2: Update the display to show the strength code
         let top5Html = '<h3>จุดแข็ง 5 อันดับแรกของคุณ:</h3>';
         top5Html += '<ol>';
         top5Strengths.forEach(([code,]) => {
@@ -535,7 +564,6 @@
         top5Html += '</ol>';
         top5Summary.innerHTML = top5Html;
         
-        // MODIFIED PART 3: Submit the updated top5 list
         const submissionData = {
             employeeId: employeeId,
             employeeName: employeeName,
@@ -554,13 +582,26 @@
         const idInput = document.getElementById('employeeId');
         const emailInput = document.getElementById('employeeEmail');
         if (nameInput.value.trim() === '' || idInput.value.trim() === '' || emailInput.value.trim() === '') {
-            showCustomAlert('กรุณากรอกข้อมูลให้ครบทุกช่อง');
+            // MODIFIED: Use SweetAlert2
+            Swal.fire({
+                icon: 'warning',
+                title: 'ข้อมูลไม่ครบถ้วน',
+                text: 'กรุณากรอกข้อมูลให้ครบทุกช่อง'
+            });
             return;
         }
+        
+        /* // Example for specific email validation
         if (!emailInput.value.toLowerCase().endsWith('@airasia.com')) {
-            showCustomAlert('กรุณาใช้อีเมล์ของ AirAsia (@airasia.com) เท่านั้น');
+             Swal.fire({
+                icon: 'error',
+                title: 'อีเมลไม่ถูกต้อง',
+                text: 'กรุณาใช้อีเมล์ของ AirAsia (@airasia.com) เท่านั้น'
+            });
             return;
         }
+        */
+        
         employeeName = nameInput.value.trim();
         employeeId = idInput.value.trim();
         employeeEmail = emailInput.value.trim();
@@ -568,32 +609,39 @@
         quizContainer.style.display = 'block';
         renderPage();
     });
+
     nextBtn.addEventListener('click', () => {
         saveAnswers();
         if (!validatePage()) {
-            showCustomAlert('กรุณาตอบคำถามให้ครบทุกข้อในหน้านี้ เพื่อไปหน้าถัดไป');
+             // MODIFIED: Use SweetAlert2
+            Swal.fire({
+                icon: 'warning',
+                title: 'ยังตอบไม่ครบ',
+                text: 'กรุณาตอบคำถามให้ครบทุกข้อในหน้านี้ เพื่อไปหน้าถัดไป'
+            });
             return;
         }
         if (currentPage < totalPages - 1) {
             currentPage++;
             renderPage();
+            window.scrollTo(0, 0); // Scroll to top on new page
         }
     });
+
     prevBtn.addEventListener('click', () => {
         saveAnswers();
         if (currentPage > 0) {
             currentPage--;
             renderPage();
+            window.scrollTo(0, 0); // Scroll to top on new page
         }
     });
+
     submitBtn.addEventListener('click', () => {
         saveAnswers();
         calculateAndShowResults();
     });
-    customAlertBtn.addEventListener('click', hideCustomAlert);
-    customAlertOverlay.addEventListener('click', (event) => {
-        if (event.target === customAlertOverlay) hideCustomAlert();
-    });
+
     // --- 7. INITIAL RENDER ---
     document.addEventListener('DOMContentLoaded', () => {
         startContainer.style.display = 'block';
