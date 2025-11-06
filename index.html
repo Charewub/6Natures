@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>เกมเรียงหน้า เรียงวัย</title>
+    <title>เกมเรียงหน้า เรียงวัย (Dropdown สีเทา)</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -84,13 +84,12 @@
             object-fit: cover; 
         }
 
-        /* === [ นี่คือส่วนที่แก้ไขสี ] === */
         .number-selector {
             width: 44px;
             height: 44px;
-            background-color: #eeeeee; /* เปลี่ยนเป็นสีเทาอ่อน */
+            background-color: #eeeeee; /* สีเทาอ่อน */
             border-radius: 50%;
-            border: 2px solid #cccccc; /* เปลี่ยนเป็นขอบสีเทา */
+            border: 2px solid #cccccc; /* ขอบสีเทา */
             margin-top: 10px;
             
             /* Sytling ตัวอักษร */
@@ -110,19 +109,15 @@
             padding: 0; 
         }
 
-        /* เมื่อเลือกตัวเลขแล้ว ให้เปลี่ยนเป็นสีดำ */
         .number-selector.selected {
             color: #000;
         }
 
         .number-selector:focus {
             outline: none;
-            box-shadow: 0 0 8px rgba(0, 0, 0, 0.2); /* เปลี่ยนเงาตอน focus เป็นสีเทา */
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.2); 
         }
-        /* === [ จบส่วนแก้ไขสี ] === */
-
-
-       
+        
     </style>
 </head>
 <body>
@@ -183,7 +178,68 @@
 
     </div>
     
-  
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const allSelectors = document.querySelectorAll('.number-selector');
+
+            function populateSelectors() {
+                allSelectors.forEach(selector => {
+                    selector.innerHTML = '';
+                    
+                    const placeholderOption = new Option('?', ''); 
+                    selector.add(placeholderOption);
+
+                    for (let i = 1; i <= 12; i++) {
+                        const option = new Option(i, i); 
+                        selector.add(option);
+                    }
+                    
+                    selector.value = '';
+                    selector.classList.remove('selected');
+                });
+            }
+
+            function updateOptionStates() {
+                const selectedValues = new Set();
+                allSelectors.forEach(selector => {
+                    if (selector.value !== '') {
+                        selectedValues.add(selector.value);
+                    }
+                });
+
+                allSelectors.forEach(selector => {
+                    const currentValue = selector.value;
+                    
+                    Array.from(selector.options).forEach(option => {
+                        if (option.value === '') return; 
+
+                        if (selectedValues.has(option.value) && option.value !== currentValue) {
+                            option.disabled = true;
+                            option.style.color = '#ccc'; 
+                        } else {
+                            option.disabled = false;
+                            option.style.color = '#000'; 
+                        }
+                    });
+                });
+            }
+
+            function handleSelectChange(event) {
+                if (event.target.value !== '') {
+                    event.target.classList.add('selected');
+                } else {
+                    event.target.classList.remove('selected');
+                }
+                
+                updateOptionStates();
+            }
+
+            // --- เริ่มต้นเกม ---
+            populateSelectors();
+            allSelectors.forEach(selector => {
+                selector.addEventListener('change', handleSelectChange);
+            });
+        });
     </script>
 </body>
 </html>
